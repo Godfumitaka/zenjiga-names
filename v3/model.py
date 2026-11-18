@@ -30,6 +30,8 @@ from dataclasses import dataclass, asdict
 
 import numpy as np
 
+from .naming import ng_interaction
+
 
 def wrap(x):
     return (x + np.pi) % (2 * np.pi) - np.pi
@@ -175,21 +177,13 @@ def simulate(cfg: Config):
             rmem[k, j] = rmem[l, j] = m
             xmat[k, j] = xmat[l, j] = m
             return
-        if not vocab[k][j]:
-            w = new_word(obs_bin(j, phi))
-            vocab[k][j].add(w)
-        else:
-            vs = sorted(vocab[k][j])
-            w = vs[int(rng_n.integers(len(vs)))]
-        cur[k, j] = w
+        # 最小の命名ゲーム（naming.py。段 2 の較正と同じ関数）。語彙が空の話し手は、自分の観測した刻みで語を作る。
+        w, ok, _ = ng_interaction(vocab[k][j], vocab[l][j], rng_n, lambda: new_word(obs_bin(j, phi)))
+        cur[k, j] = w  # 話し手：言った語
         set_x(k, j)
-        if w in vocab[l][j]:  # 成功
-            vocab[k][j] = {w}
-            vocab[l][j] = {w}
+        if ok:  # 聞き手：成功したときだけ受け入れる
             cur[l, j] = w
             set_x(l, j)
-        else:  # 失敗
-            vocab[l][j].add(w)
 
     def observe(j, phi):
         others = [k for k in range(N) if k != j]

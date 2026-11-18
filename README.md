@@ -7,9 +7,9 @@
 - `PREDICTIONS_v3.md`・`PREDICTIONS.md`：走らせる前に固定した予想（`main` の最初のコミット `c085fca` から変えていない）
 
 ## ブランチと PR（積み重ね。各 PR の基点は一つ前の段階）
-`main` ← #1 `v3-stage1` ← #2 `v3-stage2` ← #3 `v3-stage3` ← #4 `v2-stageA` ← #5 `v2-stageB` ← #6 `v3-stage4` ← #7 `reports`
+`main` ← #1 `v3-stage1` ← #2 `v3-stage2` ← #3 `v3-stage3` ← #4 `v2-stageA` ← #5 `v2-stageB` ← #6 `v3-stage4` ← #7 `reports` ← #8 `v3-stage4-more`
 
-最後のブランチ `reports` に全部が入っている。
+最後のブランチ `v3-stage4-more` に全部が入っている（報告もここが最新）。
 
 ## 走らせ方（Python 3.12、numpy・scipy・matplotlib）
 ```
@@ -19,6 +19,7 @@ uv venv .venv --python 3.12 && uv pip install --python .venv/bin/python numpy sc
 .venv/bin/python -m v3.stage3      # 段 3（五条件、種 30）約 1 分
 .venv/bin/python -m v3.stage4      # 段 4（掃引）約 15 分
 .venv/bin/python -m v3.analyze4 && .venv/bin/python -m v3.report_tables
+.venv/bin/python -m v3.stage4_more # 段 4 の追加（小さい p の種を 130 に）約 6 分
 .venv/bin/python -m v2.stageA      # 段階 A
 .venv/bin/python -m v2.stageB && .venv/bin/python -m v2.stageB long_sobs02   # 段階 B 約 8 分
 .venv/bin/python -m v2.analyzeB && .venv/bin/python -m v2.report_tables

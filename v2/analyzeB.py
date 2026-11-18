@@ -223,6 +223,19 @@ def main():
         if none is not None:
             d["none_all_agents_t_close_final_median"] = float(np.nanmedian(none["t_close_final"]))
         desc[lab] = d
+    # D3 と D0 の、付け直された主体が閉じきるまでの時間の比べ（両側 Mann–Whitney。走らせたあとに足した記述）
+    cmp_ = {}
+    for p in PS:
+        a = agent_arrays(main_[key("D3", p)])
+        b = agent_arrays(main_[key("D0", p)])
+        x = a["t_close_final"][a["name_t2"] != 0]
+        y = b["t_close_final"][b["name_t2"] != 0]
+        x = np.where(np.isnan(x), 910.0, x)
+        y = np.where(np.isnan(y), 910.0, y)
+        r = stats.mannwhitneyu(x, y, alternative="two-sided") if x.size > 2 and y.size > 2 else None
+        cmp_[str(p)] = {"n_D3": int(x.size), "n_D0": int(y.size), "median_D3": float(np.median(x)) if x.size else None,
+                        "median_D0": float(np.median(y)) if y.size else None, "p_two_sided": float(r.pvalue) if r else None}
+    desc["D3_vs_D0_t_close_final_seam30"] = cmp_
     ev["descriptive_t_close_renamed"] = desc
 
     # ---- 頑健さ

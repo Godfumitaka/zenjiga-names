@@ -43,6 +43,9 @@ def main():
             cells.append("—（0）" if r["t_close_median"] is None else f"{r['t_close_median']:.0f}（{r['n_renamed']}）")
         L.append(f"| {NAME[c]} | " + " | ".join(cells) + " |")
     L.append(f"| 名前なし（全主体） | {d['none_all_agents_t_close_final_median']:.0f} | | | | | |")
+    cm = ev["descriptive_t_close_renamed"]["D3_vs_D0_t_close_final_seam30"]
+    L.append("| D3 と D0 の差（両側 p） | " + " | ".join("—" if cm[p]["p_two_sided"] is None else
+                                                    (f"{cm[p]['p_two_sided']:.3f}" if cm[p]["p_two_sided"] >= 0.001 else "<0.001") for p in PS) + " |")
     L.append("")
     q3 = ev["Q3"]["t_close_final"]
     L.append("**表 3　Q3：短い継ぎ目で付け直されなかった主体が閉じきるまでの時間（D3 と、同じ走り・同じ主体の名前なし。p をまとめて）**\n")
